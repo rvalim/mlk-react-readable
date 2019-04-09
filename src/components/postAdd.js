@@ -8,20 +8,20 @@ class postAdd extends Component {
         super(props)
         this.state = {
             title: null,
-            body: null, 
+            body: null,
             category: null
         }
     }
 
     handleSubmit(e) {
         e.preventDefault()
-        const {title, body, category} = this.state
+        const { title, body, category } = this.state
         const { dispatch, authedUser } = this.props
 
         dispatch(savePost(title, body, authedUser, category))
     }
 
-    handleChange (e) {
+    handleChange(e) {
         this.setState({ [e.target.name]: e.target.value });
     }
 
@@ -33,7 +33,11 @@ class postAdd extends Component {
 
                     <h3>Add new Post</h3>
 
-                    <select name="category" onChange={this.handleChange.bind(this)}>
+                    <select 
+                    name="category" 
+                    required 
+                    onChange={this.handleChange.bind(this)}>
+                        <option value="">Choose one</option>
                         {categories.map(p =>
                             <option key={p.path} value={p.path}>
                                 {p.name}
@@ -53,7 +57,7 @@ class postAdd extends Component {
                         rows="5"
                         placeholder='Body for the new Post'
                         required
-                        onChange={this.handleChange.bind(this)}/>
+                        onChange={this.handleChange.bind(this)} />
 
                     <Button variant="primary" type="Submit">Save</Button>
                     <Button variant="danger" type="Reset">Cancel</Button>
