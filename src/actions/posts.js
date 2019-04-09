@@ -1,3 +1,5 @@
+import * as api from '../utils/api'
+
 export const POST_SET = 'POST_SET'
 export const POST_SAVE = 'POST_SAVE'
 export const POST_GET = 'POST_GET'
@@ -19,10 +21,10 @@ function _getAllPost(coments) {
     }
 }
 
-function _savePost(Post) {
+function _savePost(post) {
     return {
         type: POST_SAVE,
-        Post,
+        post,
     }
 }
 
@@ -49,12 +51,10 @@ export function delPost(key) {
     }
 }
 
-export function savePost(Post) {
+export function savePost(title, body, author, category) {
     return (dispatch) => {
-        // return fetch( get Post(Post)
-        //     .then(res => {
-        //         dispatch(_savePost(res))
-        //     })
+        return api.savePost(title, body, author, category)
+            .then(post => dispatch(_savePost(post)))
     }
 }
 

@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import './App.css';
 import { handleInitialData } from './actions/shared'
 import PostList from './components/postList'
+import PostDetail from './components/postDetail'
+import PostAdd from './components/postAdd'
 import Nav from './components/nav'
 
 class App extends Component {
@@ -19,6 +21,8 @@ class App extends Component {
           <Nav />
           <Switch>
             <Route path="/" exact component={PostList} />
+            <Route path="/add" component={PostAdd} />
+            <Route path="/:category/:postId" component={PostDetail} />
             <Route path="/:category" component={PostList} />
             {/*<PrivateRoute path="/:category/:post_id" component={PostList} />
             <Route path="/login" component={Login} />
