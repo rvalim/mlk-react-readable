@@ -28,10 +28,10 @@ function _savePost(post) {
     }
 }
 
-function _delPost(key) {
+function _delPost(id) {
     return {
         type: POST_DEL,
-        key,
+        id,
     }
 }
 
@@ -42,18 +42,19 @@ export function setPosts(posts) {
     }
 }
 
-export function delPost(key) {
+export function delPost(id) {
     return (dispatch) => {
-        // return fetch( get Post(key)
-        //     .then(res => {
-        //         dispatch(_delPost(res))
-        //     })
+        return api.deletePost(id)
+            .then(res => {
+                if (res.status === 200)
+                    dispatch(_delPost(id))
+            })
     }
 }
 
-export function savePost(title, body, author, category) {
+export function savePost(postId, title, body, author, category) {
     return (dispatch) => {
-        return api.savePost(title, body, author, category)
+        return api.savePost(postId, title, body, author, category)
             .then(post => dispatch(_savePost(post)))
     }
 }

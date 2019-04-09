@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { NavLink } from 'react-router-dom'
+import PostControls from './postControls'
 
 class PostList extends Component { // = ({ posts, category }) => {
     constructor(props) {
@@ -19,19 +19,7 @@ class PostList extends Component { // = ({ posts, category }) => {
             <p>{post.author}</p>
             <p>{post.commentCount}</p>
             <p>{post.voteScore}</p>
-            <div>
-                <a href=''>Up vote</a>
-                <a href=''>Down vote</a>
-            </div>
-            <div>
-                <a href=''>Edit</a>
-                <a href=''>Delete</a>
-            </div>
-            <div>
-                <NavLink to={`/${post.category}/${post.id}`} activeClassName='active'>
-                    Detail
-                </NavLink>
-            </div>
+            <PostControls id={post.id}/>
         </div>
     }
 

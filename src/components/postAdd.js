@@ -6,19 +6,23 @@ import { savePost } from '../actions/posts'
 class postAdd extends Component {
     constructor(props) {
         super(props)
+        const {post} = props
+
         this.state = {
-            title: null,
-            body: null,
-            category: null
+            title: post? post.title : null,
+            body: post? post.body : null,
+            category: post? post.category : null
         }
+        console.log('edit porraaaaa', this.state)
+
     }
 
     handleSubmit(e) {
         e.preventDefault()
         const { title, body, category } = this.state
-        const { dispatch, authedUser } = this.props
+        const { dispatch, authedUser, postId } = this.props
 
-        dispatch(savePost(title, body, authedUser, category))
+        dispatch(savePost(postId, title, body, authedUser, category))
     }
 
     handleChange(e) {
@@ -34,10 +38,11 @@ class postAdd extends Component {
                     <h3>Add new Post</h3>
 
                     <select 
-                    name="category" 
-                    required 
-                    onChange={this.handleChange.bind(this)}>
-                        <option value="">Choose one</option>
+                        name="category" 
+                        required 
+                        value={this.state.category}
+                        onChange={this.handleChange.bind(this)}>
+                        <option>Choose one</option>
                         {categories.map(p =>
                             <option key={p.path} value={p.path}>
                                 {p.name}
@@ -50,6 +55,7 @@ class postAdd extends Component {
                         type='text'
                         placeholder='Title for the new Post'
                         required
+                        value={this.state.title}
                         onChange={this.handleChange.bind(this)} />
 
                     <textarea
@@ -57,6 +63,7 @@ class postAdd extends Component {
                         rows="5"
                         placeholder='Body for the new Post'
                         required
+                        value={this.state.body}
                         onChange={this.handleChange.bind(this)} />
 
                     <Button variant="primary" type="Submit">Save</Button>
@@ -68,8 +75,14 @@ class postAdd extends Component {
     }
 }
 
-function mapStateToProps({ categories, authedUser }) {
-    return { categories, authedUser }
+function mapStateToProps({ posts, categories, authedUser }, props) {
+    const {postId} = props.match.params
+    return { 
+        categories, 
+        authedUser,
+        postId,
+        post: posts[postId]
+    }
 }
 
 export default connect(mapStateToProps)(postAdd)

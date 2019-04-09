@@ -1,6 +1,7 @@
 import {
     POST_SET,
-    POST_SAVE
+    POST_SAVE,
+    POST_DEL
 } from '../actions/posts'
 
 export default function posts(state = {}, action) {
@@ -21,7 +22,13 @@ export default function posts(state = {}, action) {
                     ...post
                 }
             }
-
+        case POST_DEL:
+            const posts0 = state
+            delete posts0[action.id]
+            
+            return {
+                ...posts0
+            }
         default:
             return state
     }

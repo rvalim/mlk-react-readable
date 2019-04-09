@@ -15,6 +15,28 @@ export function getInitialData() {
   )
 }
 
+export async function savePost(postId, title, body, author, category) {
+  const key = postId ? postId : generateUID()
+  const post = {
+    id: key,
+    ..._formatPost(title, body, author, category)
+  }
+
+  if (postId) {
+    console.log({ title, body })
+    await _put(`posts/${postId}`, { title, body })
+  }
+  else {
+    await _post('posts', post)
+  }
+
+  return post
+}
+
+export async function deletePost(key) {
+  return _delete(`posts/${key}`)
+}
+
 async function getCategories() {
   const obj = await _get('categories')
   return obj.categories
@@ -23,18 +45,6 @@ async function getCategories() {
 async function getPosts() {
   const obj = await _get('posts')
   return obj
-}
-
-export async function savePost(title, body, author, category) {
-  const key = generateUID()
-  const post = {
-    id: key,
-    ..._formatPost(title, body, author, category)
-  }
-
-  const obj = await _post('posts', post)
-
-  return post
 }
 
 function _formatPost(title, body, author, category) {
@@ -48,6 +58,25 @@ function _formatPost(title, body, author, category) {
     deleted: false,
     commentCount: 0
   }
+}
+
+async function _delete(url, value) {
+  const req = await _request(
+    url,
+    '',
+    "DELETE")
+
+  return req
+}
+
+async function _put(url, value) {
+  const req = await _request(
+    url,
+    JSON.stringify(value),
+    "PUT",
+    { 'Content-Type': 'application/json' })
+
+  return req
 }
 
 async function _post(url, value) {
@@ -67,21 +96,25 @@ async function _get(url) {
 }
 
 async function _request(url, content = '', method = "GET", header = {}) {
-  try {
-    return fetch(
-      `${apiUrl}/${url}`,
-      {
-        method,
-        headers: {
-          ..._getAuthed(),
-          ...header
-        },
-        ...(content ? { body: content } : {})
-      })
-  } catch (error) {
-    console.log(error)
-    throw error
+  return fetch(
+    `${apiUrl}/${url}`,
+    {
+      method,
+      headers: {
+        ..._getAuthed(),
+        ...header
+      },
+      ...(content ? { body: content } : {})
+    })
+    .then(_handleErrors)
+}
+
+function _handleErrors(response) {
+  if (!response.ok) {
+    console.log(response)
+    //throw Error(response.statusText);
   }
+  return response;
 }
 
 function _getAuthed() {
