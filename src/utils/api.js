@@ -2,26 +2,38 @@ import apiUrl from '../config'
 
 export function getInitialData() {
     return Promise.all(
-      [getCategories()]
+      [getCategories(),
+      getPosts()]
     ).then(
-      ([categories]) => {
+      ([categories, posts]) => {
         return {
           categories,
+          posts,
         }
       }
     )
   }
 
-export async function getCategories() {
+async function getCategories() {
+  const obj = await get('categories')
+  return obj.categories
+}
+
+async function getPosts() {
+  const obj = await get('posts')
+  return obj
+}
+
+async function get(url){
   try {
-    const res = await fetch(`${apiUrl}/categories`, getAuthed())
-    const obj = await res.json()
-    return obj.categories
+    const req = await fetch(`${apiUrl}/${url}`, getAuthed())
+    const res = await req.json()
+    return res
   } catch (error) {
     console.log(error)
     throw error
   }
-}
+} 
 
 function getAuthed(){
   return { headers: { 'Authorization': 'mlk-app' }}
