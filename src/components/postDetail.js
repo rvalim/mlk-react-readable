@@ -1,15 +1,17 @@
 import React from 'react'
 import {connect} from 'react-redux'
+import CommentList from './commentList'
 
 const postDetail = ({post}) => {
     return (
     <div>
         <h2>{post.title}</h2>
         <div>
-            <p>Writen by: {post.author}</p>
+            <p>Writen by: {post.author}{post.id}</p>
             <p>Publicated at: {post.timestamp}</p>
             <p>Category: {post.category}</p>
             <p>Score: {post.voteScore}</p>
+            <p>Comments: {post.commentCount}</p>
         </div>
         <div>
             {post.body}
@@ -17,7 +19,7 @@ const postDetail = ({post}) => {
         <div>
             <h3>Comments</h3>
             <div>
-                Need to by done
+                <CommentList postId={post.id} />
             </div>
         </div>
     </div>

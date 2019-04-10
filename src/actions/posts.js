@@ -64,7 +64,7 @@ export function delPost(id) {
 export function votePost(postId, option) {
     return (dispatch) => {
         return api.votePost(postId, option)
-            .then(post => dispatch(_votePost(postId, option == 'upVote' ? +1 : -1)))
+            .then(post => dispatch(_votePost(postId, option === 'upVote' ? +1 : -1)))
     }
 }
 
