@@ -9,12 +9,23 @@ class postAdd extends Component {
         const {post} = props
 
         this.state = {
-            title: post? post.title : null,
-            body: post? post.body : null,
-            category: post? post.category : null
+            title: post? post.title : '',
+            body: post? post.body : '',
+            category: post? post.category : ''
         }
-        console.log('edit porraaaaa', this.state)
+    }
 
+    handleReset(){
+        const { postId } = this.props
+
+        if(postId)
+            this.props.history.push('/')
+        else
+            this.setState({
+                title: '',
+                body: '',
+                category: ''
+            })
     }
 
     handleSubmit(e) {
@@ -67,7 +78,7 @@ class postAdd extends Component {
                         onChange={this.handleChange.bind(this)} />
 
                     <Button variant="primary" type="Submit">Save</Button>
-                    <Button variant="danger" type="Reset">Cancel</Button>
+                    <Button variant="danger" onClick={() => this.handleReset()}>Cancel</Button>
                 </form>
             </div>
         )
