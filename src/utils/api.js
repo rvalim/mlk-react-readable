@@ -33,8 +33,12 @@ export async function savePost(postId, title, body, author, category) {
   return post
 }
 
-export async function deletePost(key) {
-  return _delete(`posts/${key}`)
+export async function deletePost(postId) {
+  return _delete(`posts/${postId}`)
+}
+
+export async function votePost(postId, vote){
+  await _post(`posts/${postId}`, { option: vote })
 }
 
 async function getCategories() {

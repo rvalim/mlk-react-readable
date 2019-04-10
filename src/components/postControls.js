@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { delPost } from '../actions/posts'
+import { delPost, votePost } from '../actions/posts'
 import { NavLink } from 'react-router-dom'
 import { Button } from 'react-bootstrap'
 
@@ -10,7 +10,7 @@ const postControls = ({ post, dispatch }) => {
     }
 
     const handleVote = (value) => {
-        dispatch(delPost(value))
+        dispatch(votePost(post.id, value))
     }
 
     return (
