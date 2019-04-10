@@ -34,6 +34,8 @@ class postAdd extends Component {
         const { dispatch, authedUser, postId } = this.props
 
         dispatch(savePost(postId, title, body, authedUser, category))
+
+        this.props.history.push('/')
     }
 
     handleChange(e) {
