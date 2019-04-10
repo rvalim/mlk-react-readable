@@ -6,20 +6,20 @@ import { savePost } from '../actions/posts'
 class postAdd extends Component {
     constructor(props) {
         super(props)
-        const {post} = props
+        const { post } = props
 
         this.state = {
-            title: post? post.title : '',
-            body: post? post.body : '',
-            category: post? post.category : ''
+            title: post ? post.title : '',
+            body: post ? post.body : '',
+            category: post ? post.category : ''
         }
     }
 
-    handleReset(){
-        const { postId } = this.props
+    handleReset() {
+        const { postId, history } = this.props
 
-        if(postId)
-            this.props.history.push('/')
+        if (postId)
+            history.goBack()
         else
             this.setState({
                 title: '',
@@ -50,9 +50,9 @@ class postAdd extends Component {
 
                     <h3>Add new Post</h3>
 
-                    <select 
-                        name="category" 
-                        required 
+                    <select
+                        name="category"
+                        required
                         value={this.state.category}
                         onChange={this.handleChange.bind(this)}>
                         <option>Choose one</option>
@@ -89,9 +89,9 @@ class postAdd extends Component {
 }
 
 function mapStateToProps({ posts, categories, authedUser }, props) {
-    const {postId} = props.match.params
-    return { 
-        categories, 
+    const { postId } = props.match.params
+    return {
+        categories,
         authedUser,
         postId,
         post: posts[postId]
