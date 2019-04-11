@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Button } from 'react-bootstrap'
+import { Button, ButtonGroup, Form, Container, Row, Col } from 'react-bootstrap'
 import { savePost } from '../actions/posts'
 
 class postAdd extends Component {
@@ -35,7 +35,7 @@ class postAdd extends Component {
 
         dispatch(savePost(postId, title, body, authedUser, category))
 
-        this.props.history.push('/')
+        this.props.history.goBack()
     }
 
     handleChange(e) {
@@ -45,44 +45,57 @@ class postAdd extends Component {
     render() {
         const { categories } = this.props
         return (
-            <div>
-                <form onSubmit={this.handleSubmit.bind(this)}>
+            <Container>
+                <Row className="justify-content-md-center">
+                    <Col>
+                        <Form onSubmit={this.handleSubmit.bind(this)}>
+                            <Row>
+                                <Col>
+                                    <Form.Control
+                                        required
+                                        name="title"
+                                        placeholder='Title for the new Post'
+                                        value={this.state.title}
+                                        onChange={this.handleChange.bind(this)} />
 
-                    <h3>Add new Post</h3>
-
-                    <select
-                        name="category"
-                        required
-                        value={this.state.category}
-                        onChange={this.handleChange.bind(this)}>
-                        <option>Choose one</option>
-                        {categories.map(p =>
-                            <option key={p.path} value={p.path}>
-                                {p.name}
-                            </option>
-                        )}
-                    </select>
-
-                    <input
-                        name="title"
-                        type='text'
-                        placeholder='Title for the new Post'
-                        required
-                        value={this.state.title}
-                        onChange={this.handleChange.bind(this)} />
-
-                    <textarea
-                        name="body"
-                        rows="5"
-                        placeholder='Body for the new Post'
-                        required
-                        value={this.state.body}
-                        onChange={this.handleChange.bind(this)} />
-
-                    <Button variant="primary" type="Submit">Save</Button>
-                    <Button variant="danger" onClick={() => this.handleReset()}>Cancel</Button>
-                </form>
-            </div>
+                                </Col>
+                                <Col>
+                                    {this.props.postId ? '' :
+                                        <select
+                                            name="category"
+                                            required
+                                            value={this.state.category}
+                                            onChange={this.handleChange.bind(this)}>
+                                            <option value="">Choose one</option>
+                                            {categories.map(p =>
+                                                <option key={p.path} value={p.path}>
+                                                    {p.name}
+                                                </option>
+                                            )}
+                                        </select>}
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col>
+                                    <Form.Control
+                                        name="body"
+                                        as="textarea"
+                                        rows="5"
+                                        required
+                                        placeholder='Write your post here'
+                                        value={this.state.body}
+                                        onChange={this.handleChange.bind(this)} /></Col>
+                            </Row>
+                            <Row>
+                                <Col><ButtonGroup>
+                                    <Button type="Submit" variant="outline-success">Save</Button>
+                                    <Button onClick={() => this.handleReset()} variant="outline-danger">Cancel</Button>
+                                </ButtonGroup></Col>
+                            </Row>
+                        </Form>
+                    </Col>
+                </Row>
+            </Container>
         )
 
     }

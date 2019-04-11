@@ -1,12 +1,15 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { Card, Container, Row, Col, Jumbotron, ButtonGroup, Button } from 'react-bootstrap'
 import PostControls from './postControls'
+import { toDateTime } from '../utils/helper'
 
-class PostList extends Component { // = ({ posts, category }) => {
+class PostList extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            orderBy: null
+            sortBy: null,
+            posts: []
         }
     }
 
@@ -14,34 +17,61 @@ class PostList extends Component { // = ({ posts, category }) => {
         const { category } = this.props
         if (category && post.category !== category) return
 
-        return <div key={post.id}>
-            <h3>{post.title}</h3>
-            <p>{post.author}</p>
-            <p>{post.commentCount}</p>
-            <p>{post.voteScore}</p>
-            <PostControls id={post.id}/>
-        </div>
+        return <Card key={post.id} className="text-center">
+            <Card.Header>{post.title} - {post.category}</Card.Header>
+            <Card.Body>
+                <footer className="blockquote-footer">
+                    Writen by: {post.author} at {toDateTime(post.timestamp)}
+                    Score: {post.voteScore} | Comments: {post.commentCount}
+                </footer>
+                <PostControls id={post.id} />
+            </Card.Body>
+        </Card>
     }
 
     handleChange(e) {
         this.setState({ [e.target.name]: e.target.value })
     }
 
+    handleSort(field) {
+        this.setState({sortBy: field})
+    }
+
+    sortPosts() {
+        const {posts} = this.props 
+        const {sortBy} = this.state
+        const aux = Object.keys(posts).map(p => posts[p])
+        
+        if (sortBy)
+            aux.sort((a, b) => {
+                return a[sortBy] - b[sortBy];
+            });
+        
+        return aux
+    }
+
     render() {
-        const { posts } = this.props
-        return (<div>
-            <div>
-                <p>Order by:</p>
-                <select name="orderBy" onChange={this.handleChange.bind(this)}>
-                    {this.props.sortOptions.map((option, index) =>
-                        <option key={index} value={index}>
-                            {option.name}
-                        </option>
-                    )}
-                </select>
-            </div>
-            {Object.keys(posts).map(p => this.formatPost(posts[p]))}
-        </div>)
+        return (<Container>
+            <Row className="justify-content-md-center">
+                <Col>
+                    <ButtonGroup>
+                        {this.props.sortOptions.map((option, index) =>
+                            <Button
+                                key={index}
+                                className="btn-sm"
+                                onClick={() => this.handleSort(option.value)}
+                                checked>
+                                {option.name}
+                            </Button>
+                        )}
+                    </ButtonGroup>
+                </Col>
+            </Row>
+            <Jumbotron>
+                {this.sortPosts().map(p => this.formatPost(p))}
+            </Jumbotron>
+
+        </Container>)
     }
 
 }
@@ -54,7 +84,7 @@ function mapStateToProps({ posts }, props) {
         posts,
         category,
         sortOptions: [
-            addSortOption(null, 'Default'),
+            addSortOption('', 'Default'),
             addSortOption('timestamp', 'by date'),
             addSortOption('voteScore', 'by vote')
         ]

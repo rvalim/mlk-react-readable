@@ -1,44 +1,42 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { NavLink } from 'react-router-dom'
+import { Navbar, NavDropdown, Nav } from 'react-bootstrap'
 
-const Nav = ({ categories }) => {
+const MyNav = ({ categories }) => {
   const formatCategory = (category) => {
-    return <li key={category.name}>
-      <NavLink to={`/${category.path}`} exact activeClassName='active'>
-        {category.name}
-      </NavLink>
-    </li>
+    return (
+      <Nav.Item key={category.path}>
+        <NavLink to={`/${category.path}`}>{category.name}</NavLink>
+      </Nav.Item>
+    )
   }
 
   return (
-    <nav>
-      <ul>
-        <li>
-          <NavLink to='/add' activeClassName='active'>
-            New Post
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to='/' activeClassName='active'>
-            All Posts
-          </NavLink>
-        </li>
-        <li>
-          Categories
-          <ul>
+    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+      <Navbar.Brand href="#home">MLK Readable</Navbar.Brand>
+      <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+      <Navbar.Collapse id="responsive-navbar-nav">
+        <Nav className="mr-auto">
+          <Nav.Item to='/'>
+            <NavLink to='/'>Home</NavLink>
+          </Nav.Item>
+          <Nav.Item >
+            <NavLink to='/add'>New Post</NavLink>
+          </Nav.Item>
+          <NavDropdown title="Categories" id="collasible-nav-dropdown">
             {categories.map(p => formatCategory(p))}
-          </ul>
-        </li>
-      </ul>
-    </nav>
+          </NavDropdown>
+        </Nav>
+      </Navbar.Collapse>
+    </Navbar>
   )
 }
 
-function mapStateToProps({categories}) {
+function mapStateToProps({ categories }) {
   return {
     categories
   }
 }
 
-export default connect(mapStateToProps)(Nav)
+export default connect(mapStateToProps)(MyNav)

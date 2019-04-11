@@ -1,35 +1,41 @@
 import React from 'react'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import CommentList from './commentList'
+import { Jumbotron, Container, Row, Col } from 'react-bootstrap'
+import { toDateTime } from '../utils/helper'
+import PostControls from './postControls';
 
-const postDetail = ({post}) => {
-    return (
-    <div>
-        <h2>{post.title}</h2>
-        <div>
-            <p>Writen by: {post.author}{post.id}</p>
-            <p>Publicated at: {post.timestamp}</p>
-            <p>Category: {post.category}</p>
-            <p>Score: {post.voteScore}</p>
-            <p>Comments: {post.commentCount}</p>
-        </div>
-        <div>
-            {post.body}
-        </div>
-        <div>
-            <h3>Comments</h3>
-            <div>
-                <CommentList postId={post.id} />
-            </div>
-        </div>
-    </div>
+const postDetail = ({ post }) => {
+    return (<Container>
+        <Row className="justify-content-md-center">
+            <Col>
+                <Jumbotron>
+                    <h2>{post.title}</h2>
+                    <footer className="blockquote-footer">
+                        Writen by: {post.author} at {toDateTime(post.timestamp)}
+                        Score: {post.voteScore} | Comments: {post.commentCount}
+                    </footer>
+                    <div>
+                        {post.body}
+                    </div>
+                    <PostControls id={post.id} />
+                    <div>
+                        <h4>Comments</h4>
+                        <div>
+                            <CommentList postId={post.id} />
+                        </div>
+                    </div>
+                </Jumbotron>
+            </Col>
+        </Row>
+    </Container>
     )
 }
 
-function mapStateToProps({posts}, props) {
-    const {postId} = props.match.params
+function mapStateToProps({ posts }, props) {
+    const { postId } = props.match.params
     return {
-        post: posts[postId] || {}
+        post: posts[postId]
     }
 }
 

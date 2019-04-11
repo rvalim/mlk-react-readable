@@ -7,6 +7,7 @@ import PostList from './components/postList'
 import PostDetail from './components/postDetail'
 import PostAdd from './components/postAdd'
 import Nav from './components/nav'
+import NoMatch from './components/nomatch'
 
 class App extends Component {
   componentDidMount() {
@@ -21,10 +22,11 @@ class App extends Component {
           <Nav />
           <Switch>
             <Route path="/" exact component={PostList} />
-            <Route path="/edit/:postId" component={PostAdd} />
-            <Route path="/add" component={PostAdd} />
+            <Route key="appEdit" path="/edit/:postId" component={PostAdd} />
+            <Route key="appAdd" path="/add" component={PostAdd} />
             <Route path="/:category" exact component={PostList} />
             <Route path="/:category/:postId" component={PostDetail} />
+            <Route path="*" component={NoMatch} />
             {/*<PrivateRoute path="/:category/:post_id" component={PostList} />
             <Route path="/login" component={Login} />
             <PrivateRoute path="/add" component={QuestionAdd} />
