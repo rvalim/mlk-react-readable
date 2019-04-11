@@ -15,31 +15,13 @@ export function getInitialData() {
   )
 }
 
-export function savePost(postId, title, body, author, category) {
-  const key = postId ? postId : generateUID()
-  const post = {
-    id: key,
-    ..._formatPost(title, body, author, category)
-  }
-
-  if (postId) {
-    return _put(`posts/${postId}`, { title, body })
-  }
-  else {
-    return _post('posts', post)
-  }
-}
-
-export function deletePost(postId) {
-  return _delete(`posts/${postId}`)
-}
-
-export function votePost(postId, vote) {
-  return _post(`posts/${postId}`, { option: vote })
-}
-
 export function getCommentsByPost(postId) {
   return _get(`posts/${postId}/comments`)
+}
+
+export function getPost(postId)
+{
+  return _get(`posts/${postId}`)
 }
 
 export function saveComment(postId, commentId, body) {
@@ -55,14 +37,39 @@ export function saveComment(postId, commentId, body) {
   else {
     return _post('comments', obj)
   }
+
+
+}
+
+export function savePost(postId, title, body, author, category) {
+  const key = postId ? postId : generateUID()
+  const post = {
+    id: key,
+    ..._formatPost(title, body, author, category)
+  }
+
+  if (postId) {
+    return _put(`posts/${postId}`, { title, body })
+  }
+  else {
+    return _post('posts', post)
+  }
 }
 
 export function deleteComment(commentId) {
   return _delete(`comments/${commentId}`)
 }
 
+export function deletePost(postId) {
+  return _delete(`posts/${postId}`)
+}
+
 export function voteComment(commentId, vote) {
   return _post(`comments/${commentId}`, { option: vote })
+}
+
+export function votePost(postId, vote) {
+  return _post(`posts/${postId}`, { option: vote })
 }
 
 function _getCategories() {

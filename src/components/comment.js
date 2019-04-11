@@ -1,7 +1,7 @@
 import React, { Component } from '../../node_modules/react'
 import { connect } from 'react-redux'
 import { Button } from 'react-bootstrap'
-// import {saveComment, voteComment, delComment} from '../actions/comments'
+import {updatePost} from '../actions/posts'
 import * as api from '../utils/api'
 
 class CommentList extends Component {
@@ -58,7 +58,10 @@ class CommentList extends Component {
     }
 
     handleCallback(obj) {
-        const { callback } = this.props
+        const { callback, dispatch } = this.props
+
+        dispatch(updatePost(obj.parentId))
+
         if (callback) callback(obj)
     }
 

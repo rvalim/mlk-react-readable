@@ -4,7 +4,6 @@ export const POST_SET = 'POST_SET'
 export const POST_SAVE = 'POST_SAVE'
 export const POST_DEL = 'POST_DEL'
 
-
 function _savePost(post) {
     return {
         type: POST_SAVE,
@@ -12,10 +11,17 @@ function _savePost(post) {
     }
 }
 
-function _delPost(id) {
+function _delPost(postId) {
     return {
         type: POST_DEL,
-        id,
+        id: postId,
+    }
+}
+
+export function updatePost(postId) {
+    return (dispatch) => {
+        return api.getPost(postId)
+            .then(post => dispatch(_savePost(post)))
     }
 }
 
@@ -26,10 +32,10 @@ export function setPosts(posts) {
     }
 }
 
-export function delPost(id) {
+export function delPost(postId) {
     return (dispatch) => {
-        return api.deletePost(id)
-            .then(() => dispatch(_delPost(id)))
+        return api.deletePost(postId)
+            .then(() => dispatch(_delPost(postId)))
     }
 }
 
