@@ -3,8 +3,8 @@ import { generateUID } from './helper'
 
 export function getInitialData() {
   return Promise.all(
-    [getCategories(),
-    getPosts()]
+    [_getCategories(),
+    _getPosts()]
   ).then(
     ([categories, posts]) => {
       return {
@@ -15,7 +15,7 @@ export function getInitialData() {
   )
 }
 
-export async function savePost(postId, title, body, author, category) {
+export function savePost(postId, title, body, author, category) {
   const key = postId ? postId : generateUID()
   const post = {
     id: key,
@@ -23,30 +23,26 @@ export async function savePost(postId, title, body, author, category) {
   }
 
   if (postId) {
-    await _put(`posts/${postId}`, { title, body })
+    return _put(`posts/${postId}`, { title, body })
   }
   else {
-    await _post('posts', post)
+    return _post('posts', post)
   }
-
-  return post
 }
 
-export async function deletePost(postId) {
+export function deletePost(postId) {
   return _delete(`posts/${postId}`)
 }
 
-export async function votePost(postId, vote){
-  await _post(`posts/${postId}`, { option: vote })
+export function votePost(postId, vote) {
+  return _post(`posts/${postId}`, { option: vote })
 }
 
-export async function getCommentsByPost(postId){
-  console.log(`posts/${postId}/comments`)
-  const obj = await _get(`posts/${postId}/comments`)
-  return obj
+export function getCommentsByPost(postId) {
+  return _get(`posts/${postId}/comments`)
 }
 
-export async function saveComment(postId, commentId, body) {
+export function saveComment(postId, commentId, body) {
   const key = commentId ? commentId : generateUID()
   const obj = {
     id: key,
@@ -54,31 +50,28 @@ export async function saveComment(postId, commentId, body) {
   }
 
   if (commentId) {
-    await _put(`comments/${commentId}`, obj)
+    return _put(`comments/${commentId}`, obj)
   }
   else {
-    await _post('comments', obj)
+    return _post('comments', obj)
   }
-
-  return obj
 }
 
-export async function deleteComment(commentId){
+export function deleteComment(commentId) {
   return _delete(`comments/${commentId}`)
 }
 
-export async function voteComment(commentId, vote){
-  await _post(`comments/${commentId}`, { option: vote })
+export function voteComment(commentId, vote) {
+  return _post(`comments/${commentId}`, { option: vote })
 }
 
-async function getCategories() {
-  const obj = await _get('categories')
-  return obj.categories
+function _getCategories() {
+  return _get('categories')
+    .then(res => res.categories)
 }
 
-async function getPosts() {
-  const obj = await _get('posts')
-  return obj
+function _getPosts() {
+  return _get('posts')
 }
 
 function _formatPost(title, body, author, category) {
@@ -106,42 +99,36 @@ function _formatComment(postId, body, author) {
   }
 }
 
-async function _delete(url, value) {
-  const req = await _request(
+function _delete(url, value) {
+  return _request(
     url,
     '',
     "DELETE")
-
-  return req
 }
 
-async function _put(url, value) {
-  const req = await _request(
+function _put(url, value) {
+  return _request(
     url,
     JSON.stringify(value),
     "PUT",
-    { 'Content-Type': 'application/json' })
-
-  return req
+    { 'Content-Type': 'application/json' }
+  )
 }
 
-async function _post(url, value) {
-  const req = await _request(
+function _post(url, value) {
+  return _request(
     url,
     JSON.stringify(value),
     "POST",
-    { 'Content-Type': 'application/json' })
-
-  return req
+    { 'Content-Type': 'application/json' }
+  )
 }
 
-async function _get(url) {
-  const req = await _request(url)
-  const res = await req.json()
-  return res
+function _get(url) {
+  return _request(url)
 }
 
-async function _request(url, content = '', method = "GET", header = {}) {
+function _request(url, content = '', method = "GET", header = {}) {
   return fetch(
     `${apiUrl}/${url}`,
     {
@@ -153,6 +140,7 @@ async function _request(url, content = '', method = "GET", header = {}) {
       ...(content ? { body: content } : {})
     })
     .then(_handleErrors)
+    .then(res => res.json())
 }
 
 function _handleErrors(response) {

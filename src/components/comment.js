@@ -1,53 +1,55 @@
 import React, { Component } from '../../node_modules/react'
 import { connect } from 'react-redux'
 import { Button } from 'react-bootstrap'
-import {saveComment, voteComment, delComment} from '../actions/comments'
-
+// import {saveComment, voteComment, delComment} from '../actions/comments'
+import * as api from '../utils/api'
 
 class CommentList extends Component {
     constructor(props) {
         super(props)
-        const {editMode, comment} = props
-        this.state = { 
+        const { editMode, comment } = props
+        this.state = {
             editMode,
-            body: (comment && comment.body) || '',
-            score: (comment && comment.voteScore) || ''
+            body: (comment && comment.body) || ''
         }
     }
 
-    handleEdit(value){
-        this.setState({editMode:value})
+    handleEdit(value) {
+        this.setState({ editMode: value })
     }
 
     handleDelete() {
-        const {comment} = this.props
-        this.props.dispatch(delComment(comment))
-        this.handleCallback()
+        const { comment } = this.props
+
+        api.deleteComment(comment.id)
+            .then((res) => this.handleCallback(res))
     }
 
     handleVote(value) {
         const { comment } = this.props
-        this.props.dispatch(voteComment(comment.id, value))
-        this.setState(prevState => ({ 
-            score: (prevState.score + (value === 'upVote'? 1 : -1))
-        })) 
+
+        api.voteComment(comment.id, value)
+            .then(res => this.handleCallback(res))
     }
 
     handleSave(e) {
         e.preventDefault()
         const { body } = this.state
-        const { postId, dispatch, comment } = this.props
-        const commentId = comment? comment.id : null
+        const { postId, comment } = this.props
+        const commentId = comment ? comment.id : null
 
-        dispatch(saveComment(postId, body, commentId))
-        this.handleCallback()
+        api.saveComment(postId, commentId, body)
+            .then((res) => {
+                this.handleCallback(res)
+                this.handleReset()
+            })
     }
 
     handleReset() {
-        const { comment } = this.props
+        const {postId, editMode, comment} = this.props
         this.setState({ 
-            editMode: false,
-            body: (comment && comment.body) || '',
+            editMode: (postId && editMode) || false,
+            body: (comment && comment.body) || ''
         })
     }
 
@@ -55,21 +57,20 @@ class CommentList extends Component {
         this.setState({ [e.target.name]: e.target.value });
     }
 
-    handleCallback(){
-        const {callback} = this.props
-        if (callback) callback()
+    handleCallback(obj) {
+        const { callback } = this.props
+        if (callback) callback(obj)
     }
 
     renderView() {
         const { comment } = this.props
-        const {score} = this.state
-        
+
         return <div key={comment.id}>
             <h4>{comment.body}</h4>
             <div>
                 <p>Writen by: {comment.author}</p>
                 <p>Publicated at: {comment.timestamp}</p>
-                <p>Score: {score}</p>
+                <p>Score: {comment.voteScore}</p>
             </div>
         </div>
     }
@@ -96,12 +97,12 @@ class CommentList extends Component {
 
     render() {
         const { editMode } = this.state
-        const {comment} = this.props
+
         return (
             <div>
-                {editMode ? 
+                {editMode ?
                     this.renderEdit() :
-                    <div> 
+                    <div>
                         {this.renderView()}
                         <div >
                             <Button onClick={() => this.handleVote('upVote')}>Up vote</Button>

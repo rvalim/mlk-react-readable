@@ -10,16 +10,20 @@ class CommentList extends Component {
     }
 
     componentDidMount() {
-        this.load()
-    }
-
-    load() {
         const { postId } = this.props
-        
+
         getCommentsByPost(postId)
             .then((res) => {
                 this.setState({ comments: res })
             })
+    }
+
+    load(comment) {
+        const { id } = comment
+
+        this.setState(prevState => ({
+            comments: [comment, ...prevState.comments.filter(p => p.id !== id)]
+        }));
     }
 
     render() {
@@ -28,7 +32,9 @@ class CommentList extends Component {
             <div>
                 <Comment postId={postId} editMode={true} callback={this.load.bind(this)} />
                 <div>
-                    {this.state.comments.map(p => <Comment key={p.id} comment={p} callback={this.load.bind(this)} />)}
+                    {this.state.comments
+                        .filter(c => c.deleted === false)
+                        .map(p => <Comment key={p.id} comment={p} callback={this.load.bind(this)} />)}
                 </div>
             </div>
         )
