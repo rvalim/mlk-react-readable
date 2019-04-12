@@ -6,6 +6,10 @@ This project was made following instructions of the Udacity's course React Nanod
 
 The rubric spec didn't ask for login pages or security issues, so I didn't made it.
 
+## Dependencies
+
+The rest servers was delivered by Udacity, and can be get on git hub (https://github.com/udacity/reactnd-project-readable-starter)
+
 ## Structure
 
 Bellow there is some comments about the application structure, some obvious things like what action _question_ does, triggers the actions for questions, so it was not described here ( =D ). 
